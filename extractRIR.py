@@ -1,6 +1,11 @@
+#!/bin/python
+
+import sys
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.io.wavfile import write as wavwrite
+from scipy.io.wavfile import read as wavread
 import scipy.signal as sig
-from scipy.io.wavfile import read
 import matplotlib.pyplot as plt
 
 def extractRIR(recordedESS, inv_sweep, fs, debug=False):
@@ -15,6 +20,7 @@ def extractRIR(recordedESS, inv_sweep, fs, debug=False):
     Output
     impulse_response    : impulse response of room
     '''
+
     T = len(recordedESS)/fs
     T = round(T)
 
@@ -44,10 +50,15 @@ def extractRIR(recordedESS, inv_sweep, fs, debug=False):
     return impulse_response
 
 if __name__ == '__main__':
+
+    # get shell arguments
+    wavori = sys.argv[1]  # change to your recorded ESS file
+    wavinv = sys.argv[2]
+
     # import recorded ESS signal and the inverse filter
-    fs, recordedESS = read('sweep.wav') # change to your recorded ESS file
-    fs, inv_sweep = read('inv_sweep.wav')
+    fs, ori_sweep = wavread(wavori)
+    fs, inv_sweep = wavread(wavinv)
     debug = True
 
-    impulse_response = extractRIR(recordedESS, inv_sweep, fs, debug)
+    impulse_response = extractRIR(ori_sweep, inv_sweep, fs, debug)
 
