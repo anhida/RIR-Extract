@@ -10,21 +10,29 @@ from scipy.io.wavfile import write as wavwrite
 from scipy.io.wavfile import read as wavread
 
 # create inverse filter
-def invertwav(sweep_ori,sweep_fs,f1,f2,debug=True):
+def invertwav(sweep_ori,sweep_fs,f1,f2,debug=True,scaling=False):
 
-    T = len(sweep_ori)/(sweep_fs)
-    T = round(T)
-    t = np.linspace(0,(T*fs-1)/fs,T*fs)
+    # this function is questionable?????
+    inv_sweep = sweep_ori[::-1]
+    t = range(len(sweep_ori))
 
-    # create ESS signal
-    w1 = 2 * np.pi * f1
-    w2 = 2 * np.pi * f2
-    K = T*w1/np.log(w2/w1)
-    L = T/np.log(w2/w1)
-    G = np.exp(t/L)
+    if scaling:
+        T = int(len(sweep_ori)/(sweep_fs))
 
-    # this function is questionable??????
-    inv_sweep = sweep_ori[::-1]/G
+        # problematic function
+        #t = np.linspace(0,(T*fs-1)/fs,T*fs)
+
+        t = range(len(sweep_ori))/fs
+
+        # create ESS signal
+        w1 = 2 * np.pi * f1
+        w2 = 2 * np.pi * f2
+        K = T*w1/np.log(w2/w1)
+        L = T/np.log(w2/w1)
+        G = np.exp(t/L)
+
+        # scaling amplitude of the inverted
+        inv_scaled = inv_sweep/G
 
     # plot sweep signal and its inverse
     if debug:

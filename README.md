@@ -10,7 +10,7 @@ For Extract RIR, you need:
 Then you can run shell command:
 
 ```sh
-python ./exractRIR.py original_sweep.wav inverted_sweep.wav
+python exractRIR.py original_sweep.wav inverted_sweep.wav
 ```
 
 For Inverting Sweep, you need
@@ -20,7 +20,23 @@ For Inverting Sweep, you need
 Then you can run shell command:
 
 ```sh
-python ./inversfilter.py original_sweep.wav lower_freq upper_freq
+python inversfilter.py original_sweep.wav lower_freq upper_freq
+```
+
+**WARNING:** Currently, inversing wav array still not working
+
+**TIPS:** if the chunk data not understandable by WAVRead in Scipy, maybe because RIFF format inconsistency, you can re-process using **sox** tool
+
+For example:
+
+```sh
+sox original_sweep.wav soxed_sweep.wav
+```
+
+Then use it as input
+
+```sh
+python inversfilter.py soxed_sweep.wav lower_freq upper_freq
 ```
 
 Currently, inversing wav array still not working
