@@ -3,7 +3,6 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.io.wavfile import write as wavwrite
 from scipy.io.wavfile import read as wavread
 import scipy.signal as sig
 import matplotlib.pyplot as plt
