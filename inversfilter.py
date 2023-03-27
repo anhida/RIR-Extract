@@ -14,16 +14,13 @@ def invertwav(sweep_ori,sweep_fs,f1,f2,debug=True,scaling=False):
 
     # this function is questionable?????
     inv_sweep = sweep_ori[::-1]
-    t = range(len(sweep_ori))
+    T = len(sweep_ori)/(sweep_fs)
+    t = np.linspace(0,(T*fs-1)/fs,int(T*fs))
+
+    # array awal
+    inv_scaled = inv_sweep
 
     if scaling:
-        T = int(len(sweep_ori)/(sweep_fs))
-
-        # problematic function
-        #t = np.linspace(0,(T*fs-1)/fs,T*fs)
-
-        t = range(len(sweep_ori))/fs
-
         # create ESS signal
         w1 = 2 * np.pi * f1
         w2 = 2 * np.pi * f2
@@ -44,12 +41,19 @@ def invertwav(sweep_ori,sweep_fs,f1,f2,debug=True,scaling=False):
 
         plt.subplot(2,1,2)
         plt.grid()
-        plt.plot(t, inv_sweep)
+        if scaling:
+            plt.plot(t,inv_scaled)
+        else:
+            plt.plot(t, inv_sweep)
         plt.title('Inverse filter of ESS signal')
 
         plt.show()
 
-    return inv_sweep
+    if scaling:
+        return inv_scaled
+    else:
+        return inv_sweep
+
 
 if __name__ == '__main__':
     wavinput = sys.argv[1]
@@ -59,5 +63,5 @@ if __name__ == '__main__':
     # import sweep file from measurement
     fs, sweep = wavread(wavinput)
 
-    inverted_sweep = invertwav(sweep,fs,freq1,freq2)
+    inverted_sweep = invertwav(sweep,fs,freq1,freq2,scaling=True)
     wavwrite('inv_sweep.wav', fs, inverted_sweep)

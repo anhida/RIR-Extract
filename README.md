@@ -23,8 +23,6 @@ Then you can run shell command:
 python inversfilter.py original_sweep.wav lower_freq upper_freq
 ```
 
-**WARNING:** Currently, inversing wav array still not working
-
 **TIPS:** if the chunk data not understandable by WAVRead in Scipy, maybe because RIFF format inconsistency, you can re-process using **sox** tool
 
 For example:
@@ -38,6 +36,4 @@ Then use it as input
 ```sh
 python inversfilter.py soxed_sweep.wav lower_freq upper_freq
 ```
-
-Currently, inversing wav array still not working
 
