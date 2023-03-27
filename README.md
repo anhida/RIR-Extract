@@ -3,9 +3,11 @@ A repository for processing and analyzing room impulse response (RIR)
 
 ## How To run script
 
+### Extract RIR
+
 For Extract RIR, you need:
-- original sweep
-- inverted sweep
+-measurement sweep
+-inverted sweep
 
 Then you can run shell command:
 
@@ -13,9 +15,11 @@ Then you can run shell command:
 python exractRIR.py original_sweep.wav inverted_sweep.wav
 ```
 
+### Invert Sweep
+
 For Inverting Sweep, you need
-- Original Sweep
-- Upper and Lower limit of sweep's frequency
+- measurement sweep
+- upper and lower limit of sweep's frequency
 
 Then you can run shell command:
 
@@ -23,7 +27,9 @@ Then you can run shell command:
 python inversfilter.py original_sweep.wav lower_freq upper_freq
 ```
 
-**TIPS:** if the chunk data not understandable by WAVRead in Scipy, maybe because RIFF format inconsistency, you can re-process using **sox** tool
+### Fix data chunk error
+
+If the chunk data not understandable by WAVRead in Scipy, maybe because RIFF format inconsistency, you can re-process using **sox** tool
 
 For example:
 

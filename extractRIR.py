@@ -21,9 +21,7 @@ def extractRIR(recordedESS, inv_sweep, fs, debug=False):
     '''
 
     T = len(recordedESS)/fs
-    T = round(T)
-
-    t = np.linspace(0,(T*fs-1)/fs,T*fs)
+    t = np.linspace(0,(T*fs-1)/fs,int(T*fs))
 
     impulse_response = sig.fftconvolve(recordedESS, inv_sweep, mode='same')
 
