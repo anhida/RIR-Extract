@@ -18,7 +18,7 @@ python exractRIR.py original_sweep.wav inverted_sweep.wav
 ### Invert Sweep
 
 For Inverting Sweep, you need
-- measurement sweep
+- reference sweep
 - upper and lower limit of sweep's frequency
 
 Then you can run shell command:
