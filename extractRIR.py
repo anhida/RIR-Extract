@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.io.wavfile import read as wavread
 import scipy.signal as sig
 import matplotlib.pyplot as plt
+from scipy.io.wavfile import write
 
 def extractRIR(recordedESS, inv_sweep, fs, debug=False):
     '''
@@ -59,3 +60,8 @@ if __name__ == '__main__':
 
     impulse_response = extractRIR(ori_sweep, inv_sweep, fs, debug)
 
+#create impulse response .wav
+write("impulse_response.wav", fs, data)
+
+#create impulse response .mat
+???
