@@ -6,14 +6,18 @@ A repository for processing and analyzing room impulse response (RIR)
 ### Extract RIR
 
 For Extract RIR, you need:
--measurement sweep
--inverted sweep
+- measurement sweep
+- inverted sweep
 
 Then you can run shell command:
 
 ```sh
 python exractRIR.py original_sweep.wav inverted_sweep.wav
 ```
+
+example of result:
+
+![images](images/extractRIR.png?raw=true)
 
 ### Invert Sweep
 
@@ -26,6 +30,10 @@ Then you can run shell command:
 ```sh
 python inversfilter.py original_sweep.wav lower_freq upper_freq
 ```
+
+example of result:
+
+![images](images/inversfilter.png?raw=true)
 
 ### Fix data chunk error
 
