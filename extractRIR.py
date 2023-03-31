@@ -62,7 +62,7 @@ if __name__ == '__main__':
     impulse_response = extractRIR(ori_sweep, inv_sweep, fs, debug)
 
     #create impulse response .wav
-    write("impulse_response.wav", fs, impulse_response)
+    write("impulse_response.wav", fs, impulse_response.astype(np.float32))
 
     #create impulse response .mat
     savemat("impulse_response.mat",{'risp_imp':impulse_response})
