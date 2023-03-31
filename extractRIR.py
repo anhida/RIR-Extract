@@ -27,6 +27,9 @@ def extractRIR(recordedESS, inv_sweep, fs, debug=False):
 
     impulse_response = sig.fftconvolve(recordedESS, inv_sweep, mode='same')
 
+    # normalize the impulse response
+    impulse_response = impulse_response/max(impulse_response)
+
     if debug == True:
         plt.figure()
         plt.subplot(3,1,1)
@@ -48,6 +51,32 @@ def extractRIR(recordedESS, inv_sweep, fs, debug=False):
 
     return impulse_response
 
+# convert PCM signal to floating point signal
+def pcm2float(signal, dtype='float32'):
+    '''
+    Function to convert PCM signal to floating point signal, as shown in https://gist.github.com/HudsonHuang/fbdf8e9af7993fe2a91620d3fb86a182
+    Input
+    signal      : input signal array (should be int type)
+    dtype       : desired (floating point) data type, default: float32 (high precision)
+
+    Output
+    output      : normalized floating point signal
+    '''
+    signal = np.asarray(signal)
+    if signal.dtype.kind not in 'iu':
+        raise TypeError('Signal should be an array of integer')
+
+    dtype = np.dtype(dtype)
+
+    if dtype.kind != 'f':
+        raise TypeError('The dtype should be a floating point type')
+
+    limit = np.iinfo(signal.dtype)
+    absolute_max = 2 ** (limit.bits - 1)
+    offset = limit.min + absolute_max
+
+    return (signal.astype(dtype) - offset) / absolute_max
+
 if __name__ == '__main__':
 
     # get shell arguments
@@ -57,6 +86,11 @@ if __name__ == '__main__':
     # import recorded ESS signal and the inverse filter
     fs, ori_sweep = wavread(wavori)
     fs, inv_sweep = wavread(wavinv)
+
+    # checking audio format
+    if ori_sweep.dtype.kind != 'f':
+        ori_sweep = pcm2float(ori_sweep)
+
     debug = True
 
     impulse_response = extractRIR(ori_sweep, inv_sweep, fs, debug)

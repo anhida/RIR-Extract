@@ -54,14 +54,44 @@ def invertwav(sweep_ori,sweep_fs,f1,f2,debug=True,scaling=False):
     else:
         return inv_sweep
 
+# convert PCM signal to floating point signal
+def pcm2float(signal, dtype='float32'):
+    '''
+    Function to convert PCM signal to floating point signal, as shown in https://gist.github.com/HudsonHuang/fbdf8e9af7993fe2a91620d3fb86a182
+    Input
+    signal      : input signal array (should be int type)
+    dtype       : desired (floating point) data type, default: float32 (high precision)
+
+    Output
+    output      : normalized floating point signal
+    '''
+    signal = np.asarray(signal)
+    if signal.dtype.kind not in 'iu':
+        raise TypeError('Signal should be an array of integer')
+
+    dtype = np.dtype(dtype)
+
+    if dtype.kind != 'f':
+        raise TypeError('The dtype should be a floating point type')
+
+    limit = np.iinfo(signal.dtype)
+    absolute_max = 2 ** (limit.bits - 1)
+    offset = limit.min + absolute_max
+
+    return (signal.astype(dtype) - offset) / absolute_max
 
 if __name__ == '__main__':
     wavinput = sys.argv[1]
+
     freq1 = float(sys.argv[2])
     freq2 = float(sys.argv[3])
 
     # import sweep file from measurement
     fs, sweep = wavread(wavinput)
+
+    # check audio data type, converting int16 to float32
+    if sweep.dtype.kind != 'f':
+        sweep = pcm2float(sweep)
 
     inverted_sweep = invertwav(sweep,fs,freq1,freq2,scaling=True)
     wavwrite('inv_sweep.wav', fs, inverted_sweep.astype(np.float32))
