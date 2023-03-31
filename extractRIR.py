@@ -2,14 +2,13 @@
 
 import sys
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.io.wavfile import read as wavread
 import scipy.signal as sig
 import matplotlib.pyplot as plt
 from scipy.io.wavfile import write
 from scipy.io import savemat
 
-def extractRIR(recordedESS, inv_sweep, fs, debug=False):
+def extractRIR(sweep_ori, sweep_inv, fs, debug=True):
     '''
     Function to extract impulse response based on Angelo Farina's method. The code adopted from https://dsp.stackexchange.com/questions/41696/calculating-the-inverse-filter-for-the-exponential-sine-sweep-method
     Input
@@ -22,31 +21,38 @@ def extractRIR(recordedESS, inv_sweep, fs, debug=False):
     impulse_response    : impulse response of room
     '''
 
-    T = len(recordedESS)/fs
+    T = len(sweep_ori)/fs
     t = np.linspace(0,(T*fs-1)/fs,int(T*fs))
 
-    impulse_response = sig.fftconvolve(recordedESS, inv_sweep, mode='same')
+    # change into float -1 to 1 based on max value
+    sweep_norm = sweep_ori/max(sweep_ori)
+
+    # convolve both to get impulse response
+    impulse_response = sig.fftconvolve(sweep_norm, sweep_inv, mode='same')
+
+    # change into float -1 to 1 based on max value
+    norm_impulse_resp = impulse_response/max(impulse_response)
 
     if debug == True:
         plt.figure()
         plt.subplot(3,1,1)
         plt.grid()
-        plt.plot(t, recordedESS)
-        plt.title('Recorded ESS signal')
+        plt.plot(t, sweep_norm)
+        plt.title('Recorded signal')
 
         plt.subplot(3,1,2)
         plt.grid()
-        plt.plot(t, inv_sweep)
-        plt.title('Inverse Filter of ESS signal')
+        plt.plot(t, sweep_inv)
+        plt.title('Inverse Filter of signal')
 
         plt.subplot(3,1,3)
         plt.grid()
-        plt.plot(t, impulse_response)
+        plt.plot(t, norm_impulse_resp)
         plt.title('Room Impulse Response')
 
         plt.show()
 
-    return impulse_response
+    return norm_impulse_resp
 
 if __name__ == '__main__':
 
@@ -57,12 +63,12 @@ if __name__ == '__main__':
     # import recorded ESS signal and the inverse filter
     fs, ori_sweep = wavread(wavori)
     fs, inv_sweep = wavread(wavinv)
-    debug = True
 
-    impulse_response = extractRIR(ori_sweep, inv_sweep, fs, debug)
+    # get normaized impulse response array
+    impulse_response = extractRIR(ori_sweep, inv_sweep, fs)
 
-    #create impulse response .wav
-    write("impulse_response.wav", fs, impulse_response.astype(np.float32))
+    #save impulse response as WAV
+    write("impulse_response.wav", fs, impulse_response)
 
     #create impulse response .mat
     savemat("impulse_response.mat",{'risp_imp':impulse_response})
