@@ -64,4 +64,4 @@ if __name__ == '__main__':
     fs, sweep = wavread(wavinput)
 
     inverted_sweep = invertwav(sweep,fs,freq1,freq2,scaling=True)
-    wavwrite('inv_sweep.wav', fs, inverted_sweep)
+    wavwrite('inv_sweep.wav', fs, data.astype(np.float32))
